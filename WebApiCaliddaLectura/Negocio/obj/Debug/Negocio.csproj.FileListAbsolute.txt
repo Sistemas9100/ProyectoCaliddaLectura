@@ -1,0 +1,7 @@
+C:\IRVIN\ProyectoCaliddaLectura\WebApiCaliddaLectura\Negocio\bin\Debug\Negocio.dll
+C:\IRVIN\ProyectoCaliddaLectura\WebApiCaliddaLectura\Negocio\bin\Debug\Negocio.pdb
+C:\IRVIN\ProyectoCaliddaLectura\WebApiCaliddaLectura\Negocio\bin\Debug\Entidades.dll
+C:\IRVIN\ProyectoCaliddaLectura\WebApiCaliddaLectura\Negocio\bin\Debug\Entidades.pdb
+C:\IRVIN\ProyectoCaliddaLectura\WebApiCaliddaLectura\Negocio\obj\Debug\Negocio.csprojResolveAssemblyReference.cache
+C:\IRVIN\ProyectoCaliddaLectura\WebApiCaliddaLectura\Negocio\obj\Debug\Negocio.dll
+C:\IRVIN\ProyectoCaliddaLectura\WebApiCaliddaLectura\Negocio\obj\Debug\Negocio.pdb

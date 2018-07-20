@@ -1,0 +1,4 @@
+C:\IRVIN\ProyectoCaliddaLectura\WebApiCaliddaLectura\Entidades\bin\Release\Entidades.dll
+C:\IRVIN\ProyectoCaliddaLectura\WebApiCaliddaLectura\Entidades\bin\Release\Entidades.pdb
+C:\IRVIN\ProyectoCaliddaLectura\WebApiCaliddaLectura\Entidades\obj\Release\Entidades.dll
+C:\IRVIN\ProyectoCaliddaLectura\WebApiCaliddaLectura\Entidades\obj\Release\Entidades.pdb

@@ -1,0 +1,5 @@
+C:\IRVIN\ProyectoCaliddaLectura\WebApiCaliddaLectura\Entidades\bin\Debug\Entidades.dll
+C:\IRVIN\ProyectoCaliddaLectura\WebApiCaliddaLectura\Entidades\bin\Debug\Entidades.pdb
+C:\IRVIN\ProyectoCaliddaLectura\WebApiCaliddaLectura\Entidades\obj\Debug\Entidades.csprojResolveAssemblyReference.cache
+C:\IRVIN\ProyectoCaliddaLectura\WebApiCaliddaLectura\Entidades\obj\Debug\Entidades.dll
+C:\IRVIN\ProyectoCaliddaLectura\WebApiCaliddaLectura\Entidades\obj\Debug\Entidades.pdb
