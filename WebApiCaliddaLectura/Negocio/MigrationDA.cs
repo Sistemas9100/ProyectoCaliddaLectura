@@ -367,7 +367,7 @@ namespace Negocio
 
                     foreach (var r in registroList)
                     {
-                        if (r.tipo <= 2)
+                        if (r.tipo == 1 || r.tipo == 2)
                         {
                             using (SqlCommand cmd = new SqlCommand("USP_SAVE_REGISTRO_LECTURA", con))
                             {
@@ -418,7 +418,7 @@ namespace Negocio
                             }
 
                         }
-                        else if (r.tipo >= 3)
+                        else if (r.tipo == 3 || r.tipo == 4)
                         {
                             using (SqlCommand cmd = new SqlCommand("USP_SAVE_REGISTRO_CORTES", con))
                             {
@@ -470,6 +470,46 @@ namespace Negocio
                             }
 
                         }
+                        else if (r.tipo == 6)
+                        {
+                            using (SqlCommand cmd = new SqlCommand("USP_SAVE_SUMINISTOR_ENCONTRADO", con))
+                            {
+                                cmd.CommandTimeout = 0;
+                                cmd.CommandType = CommandType.StoredProcedure;
+                                cmd.Parameters.Add("@ID_Registro", SqlDbType.Int).Value = r.iD_Registro;
+                                cmd.Parameters.Add("@id_operario", SqlDbType.Int).Value = r.iD_Operario;
+                                cmd.Parameters.Add("@suministro_medidor", SqlDbType.VarChar).Value = r.iD_Suministro;
+                                cmd.Parameters.Add("@suministro_contrato", SqlDbType.VarChar).Value = r.registro_Constancia;
+                                cmd.Parameters.Add("@suministro_cliente", SqlDbType.VarChar).Value = r.suministroCliente;
+                                cmd.Parameters.Add("@suministro_direccion", SqlDbType.VarChar).Value = r.suministroDireccion;
+                                cmd.Parameters.Add("@suministro_observacion", SqlDbType.VarChar).Value = r.registro_Observacion;
+                                cmd.Parameters.Add("@fecha_movil", SqlDbType.VarChar).Value = r.registro_Fecha_SQLITE;
+
+                                SqlDataReader dr = cmd.ExecuteReader();
+                                if (dr.HasRows)
+                                {
+                                    while (dr.Read())
+                                    {
+                                        lastId = dr.GetInt32(0);
+                                        foreach (var itemS in r.photos)
+                                        {
+                                            SqlCommand cmds = con.CreateCommand();
+                                            cmds.CommandType = System.Data.CommandType.StoredProcedure;
+                                            cmds.CommandText = "USP_SAVE_REGISTRO_PHOTO_LECTURA";
+                                            cmds.Parameters.Add("@ID_Registro", SqlDbType.Int).Value = lastId;
+                                            cmds.Parameters.Add("@RutaFoto", SqlDbType.VarChar).Value = itemS.rutaFoto;
+                                            cmds.ExecuteNonQuery();
+                                        }
+                                        m.mensaje = "Datos Enviados";
+                                    }
+                                }
+                                else
+                                {
+                                    m = null;
+                                    return m;
+                                }
+                            }
+                        }
                     }
 
                     con.Close();
@@ -493,7 +533,7 @@ namespace Negocio
                 using (SqlConnection con = new SqlConnection(db))
                 {
                     con.Open();
-                    if (r.tipo <= 2)
+                    if (r.tipo == 2 || r.tipo == 1)
                     {
                         using (SqlCommand cmd = new SqlCommand("USP_SAVE_REGISTRO_LECTURA", con))
                         {
@@ -540,7 +580,7 @@ namespace Negocio
                             }
                         }
                     }
-                    else if (r.tipo >= 3)
+                    else if (r.tipo == 3 || r.tipo == 4)
                     {
                         using (SqlCommand cmd = new SqlCommand("USP_SAVE_REGISTRO_CORTES", con))
                         {
@@ -575,6 +615,46 @@ namespace Negocio
                                         SqlCommand cmds = con.CreateCommand();
                                         cmds.CommandType = System.Data.CommandType.StoredProcedure;
                                         cmds.CommandText = "USP_SAVE_REGISTRO_PHOTO";
+                                        cmds.Parameters.Add("@ID_Registro", SqlDbType.Int).Value = lastId;
+                                        cmds.Parameters.Add("@RutaFoto", SqlDbType.VarChar).Value = itemS.rutaFoto;
+                                        cmds.ExecuteNonQuery();
+                                    }
+                                    m.mensaje = "Datos Enviados";
+                                }
+                            }
+                            else
+                            {
+                                return m;
+                            }
+                        }
+                    }
+                    else if (r.tipo == 6)
+                    {
+                        using (SqlCommand cmd = new SqlCommand("USP_SAVE_SUMINISTOR_ENCONTRADO", con))
+                        {
+                            cmd.CommandTimeout = 0;
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.Add("@ID_Registro", SqlDbType.Int).Value = r.iD_Registro;
+                            cmd.Parameters.Add("@id_operario", SqlDbType.Int).Value = r.iD_Operario;
+                            cmd.Parameters.Add("@suministro_medidor", SqlDbType.VarChar).Value = r.iD_Suministro;
+                            cmd.Parameters.Add("@suministro_contrato", SqlDbType.VarChar).Value = r.registro_Constancia;
+                            cmd.Parameters.Add("@suministro_cliente", SqlDbType.VarChar).Value = r.suministroCliente;
+                            cmd.Parameters.Add("@suministro_direccion", SqlDbType.VarChar).Value = r.suministroDireccion;
+                            cmd.Parameters.Add("@suministro_observacion", SqlDbType.VarChar).Value = r.registro_Observacion;
+                            cmd.Parameters.Add("@fecha_movil", SqlDbType.VarChar).Value = r.registro_Fecha_SQLITE;
+
+                            SqlDataReader dr = cmd.ExecuteReader();
+                            m = new Mensaje();
+                            if (dr.HasRows)
+                            {
+                                while (dr.Read())
+                                {
+                                    lastId = dr.GetInt32(0);
+                                    foreach (var itemS in r.photos)
+                                    {
+                                        SqlCommand cmds = con.CreateCommand();
+                                        cmds.CommandType = System.Data.CommandType.StoredProcedure;
+                                        cmds.CommandText = "USP_SAVE_REGISTRO_PHOTO_LECTURA";
                                         cmds.Parameters.Add("@ID_Registro", SqlDbType.Int).Value = lastId;
                                         cmds.Parameters.Add("@RutaFoto", SqlDbType.VarChar).Value = itemS.rutaFoto;
                                         cmds.ExecuteNonQuery();

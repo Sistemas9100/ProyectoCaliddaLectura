@@ -19,7 +19,7 @@ namespace Negocio
         {
             try
             {
-                Login item = new Login();
+                Login item =null;
                 using (SqlConnection cn = new SqlConnection(db))
                 {
                     cn.Open();
@@ -32,6 +32,7 @@ namespace Negocio
                         SqlDataReader dr = cmd.ExecuteReader();
                         while (dr.Read())
                         {
+                            item = new Login();
                             item.iD_Operario = Convert.ToInt32(dr["ID_Operario"]);
                             item.operario_Login = dr["Operario_Login"].ToString();
                             item.operario_Contrasenia = dr["Operario_Contrasenia"].ToString();

@@ -28,7 +28,7 @@ namespace WebApiFenosa.Controllers
             else return NotFound();
 
         }
-              
+
         [HttpGet]
         [Route("api/Migration/MigracionAll")]
         public IHttpActionResult MigracionAll(int operarioId)
@@ -70,24 +70,24 @@ namespace WebApiFenosa.Controllers
 
         [HttpPost] // This is from System.Web.Http, and not from System.Web.Mvc
         [Route("api/Migration/SavePhoto")]
-        public IHttpActionResult Upload()
+        public HttpResponseMessage Upload()
         {
-            
-            if (!Request.Content.IsMimeMultipartContent())
+
+            try
             {
-                this.Request.CreateResponse(HttpStatusCode.UnsupportedMediaType);
+                //string path = "C:/HostingSpaces/admincobraperu/www.cobraperu.com/wwwroot/Calidda/Content/foto/foto/";
+                string path = HttpContext.Current.Server.MapPath("~/Imagen/");
+                System.Web.HttpFileCollection files = System.Web.HttpContext.Current.Request.Files;
+                string fileName = Path.GetFileName(files[0].FileName);
+                files[0].SaveAs(path + fileName);
+                return this.Request.CreateResponse(HttpStatusCode.OK, new { mensaje = "Mensaje enviado" });
+
             }
+            catch (Exception)
+            {
+                return this.Request.CreateResponse(HttpStatusCode.InternalServerError, new { mensaje = "Error" });
 
-            string path = HttpContext.Current.Server.MapPath("~/Imagen/");
-            System.Web.HttpFileCollection files = System.Web.HttpContext.Current.Request.Files;
-            string fileName = Path.GetFileName(files[0].FileName);
-            files[0].SaveAs(path + fileName);
-
-            Mensaje mensaje = new Mensaje();
-            mensaje.mensaje = "Mensaje enviado";
-
-            return Ok(mensaje);
-
+            }
 
         }
 

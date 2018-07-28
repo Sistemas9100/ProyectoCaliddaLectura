@@ -10,7 +10,7 @@ namespace Entidades
     {
         public int iD_Registro { get; set; }
         public int iD_Operario { get; set; }
-        public int iD_Suministro { get; set; }
+        public int iD_Suministro { get; set; }  // para tipo 6 = medidor
         public int iD_TipoLectura { get; set; }
         public string registro_Fecha_SQLITE { get; set; }
         public string registro_Latitud { get; set; }
@@ -22,10 +22,14 @@ namespace Entidades
         public string registro_TieneFoto { get; set; }
         public string registro_TipoProceso { get; set; }
         public string fecha_Sincronizacion_Android { get; set; }
-        public string registro_Constancia { get; set; }
+        public string registro_Constancia { get; set; } // para tipo 6 = contrato
         public string registro_Desplaza { get; set; }
         public string codigo_Resultado { get; set; }
+        public string horaActa { get; set; } 
+        public string suministroCliente { get; set; }
+        public string suministroDireccion { get; set; }
         public int tipo { get; set; }
-        public List<RegistroPhoto> photos { get; set; }
+        public List<RegistroPhoto> photos { get; set; }             
+         
     }
 }
