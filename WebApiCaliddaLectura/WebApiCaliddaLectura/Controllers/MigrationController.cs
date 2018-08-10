@@ -75,8 +75,8 @@ namespace WebApiFenosa.Controllers
 
             try
             {
-                //string path = "C:/HostingSpaces/admincobraperu/www.cobraperu.com/wwwroot/Calidda/Content/foto/foto/";
-                string path = HttpContext.Current.Server.MapPath("~/Imagen/");
+                string path = "C:/HostingSpaces/admincobraperu/www.cobraperu.com/wwwroot/Calidda/Content/foto/foto/";
+                //string path = HttpContext.Current.Server.MapPath("~/Imagen/");
                 System.Web.HttpFileCollection files = System.Web.HttpContext.Current.Request.Files;
                 string fileName = Path.GetFileName(files[0].FileName);
                 files[0].SaveAs(path + fileName);

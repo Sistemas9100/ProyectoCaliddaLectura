@@ -23,23 +23,30 @@ namespace Negocio
                 using (SqlConnection cn = new SqlConnection(db))
                 {
                     cn.Open();
-                    using (SqlCommand cmd = new SqlCommand("MOVIL_Login", cn))
+                    using (SqlCommand cmd = new SqlCommand("USP_LOGIN", cn))
                     {
                         cmd.CommandTimeout = 0;
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@User", user);
-                        cmd.Parameters.AddWithValue("@Pass", password);
-                        SqlDataReader dr = cmd.ExecuteReader();
+                        cmd.Parameters.Add("@User", SqlDbType.VarChar).Value = user; 
+                        SqlDataReader dr = cmd.ExecuteReader();                       
                         while (dr.Read())
                         {
                             item = new Login();
-                            item.iD_Operario = Convert.ToInt32(dr["ID_Operario"]);
-                            item.operario_Login = dr["Operario_Login"].ToString();
-                            item.operario_Contrasenia = dr["Operario_Contrasenia"].ToString();
-                            item.operario_Nombre = dr["Operario_Nombre"].ToString();
-                            item.operario_EnvioEn_Linea = Convert.ToInt32(dr["Operario_EnvioEn_Linea"]);
-                            item.tipoUsuario = dr["TipoUsuario"].ToString();
-                            item.estado = dr["estado"].ToString();
+                            if (password == dr.GetString(2))
+                            {
+                                item.iD_Operario = Convert.ToInt32(dr["ID_Operario"]);
+                                item.operario_Login = dr["Operario_Login"].ToString();
+                                item.operario_Contrasenia = dr["Operario_Contrasenia"].ToString();
+                                item.operario_Nombre = dr["Operario_Nombre"].ToString();
+                                item.operario_EnvioEn_Linea = Convert.ToInt32(dr["Operario_EnvioEn_Linea"]);
+                                item.tipoUsuario = dr["TipoUsuario"].ToString();
+                                item.estado = dr["estado"].ToString();
+                                item.mensaje = "Go";
+                            }
+                            else
+                            {
+                                item.mensaje = "Pass";
+                            }                                                     
                         }
                         dr.Close();
                     }

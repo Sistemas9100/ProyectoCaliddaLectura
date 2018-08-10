@@ -389,6 +389,7 @@ namespace Negocio
                                 cmd.Parameters.Add("@Fecha_Sincronizacion_Android", SqlDbType.VarChar).Value = r.fecha_Sincronizacion_Android;
                                 cmd.Parameters.Add("@Registro_Constancia", SqlDbType.VarChar).Value = r.registro_Constancia;
                                 cmd.Parameters.Add("@Registro_Desplaza", SqlDbType.VarChar).Value = r.registro_Desplaza;
+                                cmd.Parameters.Add("@Suministro_Numero", SqlDbType.Int).Value = r.suministro_Numero;
                                 SqlDataReader dr = cmd.ExecuteReader();
                                 if (dr.HasRows)
                                 {
@@ -397,14 +398,12 @@ namespace Negocio
                                         lastId = dr.GetInt32(0);
                                         foreach (var itemS in r.photos)
                                         {
-
                                             SqlCommand cmds = con.CreateCommand();
                                             cmds.CommandType = System.Data.CommandType.StoredProcedure;
                                             cmds.CommandText = "USP_SAVE_REGISTRO_PHOTO_LECTURA";
                                             cmds.Parameters.Add("@ID_Registro", SqlDbType.Int).Value = lastId;
                                             cmds.Parameters.Add("@RutaFoto", SqlDbType.VarChar).Value = itemS.rutaFoto;
                                             cmds.ExecuteNonQuery();
-
                                         }
                                         //Nota : No cambiar este mensaje , se valida con el android...arigato <3
                                         m.mensaje = "Datos Enviados";
@@ -441,6 +440,8 @@ namespace Negocio
                                 cmd.Parameters.Add("@Registro_Constancia", SqlDbType.VarChar).Value = r.registro_Constancia;
                                 cmd.Parameters.Add("@Registro_Desplaza", SqlDbType.VarChar).Value = r.registro_Desplaza;
                                 cmd.Parameters.Add("@Codigo_Resultado", SqlDbType.VarChar).Value = r.codigo_Resultado;
+                                cmd.Parameters.Add("@horaActa", SqlDbType.VarChar).Value = r.horaActa == null ? "" : r.horaActa;
+                                cmd.Parameters.Add("@Suministro_Numero", SqlDbType.Int).Value = r.suministro_Numero;
                                 SqlDataReader dr = cmd.ExecuteReader();
                                 if (dr.HasRows)
                                 {
@@ -472,7 +473,7 @@ namespace Negocio
                         }
                         else if (r.tipo == 6)
                         {
-                            using (SqlCommand cmd = new SqlCommand("USP_SAVE_SUMINISTOR_ENCONTRADO", con))
+                            using (SqlCommand cmd = new SqlCommand("USP_SAVE_SUMINISTRO_ENCONTRADO", con))
                             {
                                 cmd.CommandTimeout = 0;
                                 cmd.CommandType = CommandType.StoredProcedure;
@@ -555,6 +556,7 @@ namespace Negocio
                             cmd.Parameters.Add("@Fecha_Sincronizacion_Android", SqlDbType.VarChar).Value = r.fecha_Sincronizacion_Android;
                             cmd.Parameters.Add("@Registro_Constancia", SqlDbType.VarChar).Value = r.registro_Constancia;
                             cmd.Parameters.Add("@Registro_Desplaza", SqlDbType.VarChar).Value = r.registro_Desplaza;
+                            cmd.Parameters.Add("@Suministro_Numero", SqlDbType.Int).Value = r.suministro_Numero;
                             SqlDataReader dr = cmd.ExecuteReader();
                             m = new Mensaje();
                             if (dr.HasRows)
@@ -603,6 +605,8 @@ namespace Negocio
                             cmd.Parameters.Add("@Registro_Constancia", SqlDbType.VarChar).Value = r.registro_Constancia;
                             cmd.Parameters.Add("@Registro_Desplaza", SqlDbType.VarChar).Value = r.registro_Desplaza;
                             cmd.Parameters.Add("@Codigo_Resultado", SqlDbType.VarChar).Value = r.codigo_Resultado;
+                            cmd.Parameters.Add("@horaActa", SqlDbType.VarChar).Value = r.horaActa == null ? "" : r.horaActa ;
+                            cmd.Parameters.Add("@Suministro_Numero", SqlDbType.Int).Value = r.suministro_Numero;
                             SqlDataReader dr = cmd.ExecuteReader();
                             m = new Mensaje();
                             if (dr.HasRows)
@@ -630,7 +634,7 @@ namespace Negocio
                     }
                     else if (r.tipo == 6)
                     {
-                        using (SqlCommand cmd = new SqlCommand("USP_SAVE_SUMINISTOR_ENCONTRADO", con))
+                        using (SqlCommand cmd = new SqlCommand("USP_SAVE_SUMINISTRO_ENCONTRADO", con))
                         {
                             cmd.CommandTimeout = 0;
                             cmd.CommandType = CommandType.StoredProcedure;

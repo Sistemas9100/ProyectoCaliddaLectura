@@ -11,6 +11,7 @@ namespace Entidades
         public int iD_Registro { get; set; }
         public int iD_Operario { get; set; }
         public int iD_Suministro { get; set; }  // para tipo 6 = medidor
+        public int suministro_Numero { get; set; }
         public int iD_TipoLectura { get; set; }
         public string registro_Fecha_SQLITE { get; set; }
         public string registro_Latitud { get; set; }
