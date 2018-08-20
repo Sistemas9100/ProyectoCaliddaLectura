@@ -11,6 +11,6 @@ namespace Entities
     {
         public int sincronizarId { get; set; }
         public List<Suministro> suministrosCortes { get; set; }
-        public List<Suministro> suministroReconexion { get; set; }
+        public List<Suministro> suministroReconexion { get; set; } 
     }
 }

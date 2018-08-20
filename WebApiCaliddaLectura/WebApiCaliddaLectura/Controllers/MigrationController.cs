@@ -1,4 +1,5 @@
 ﻿using Entidades;
+using Entities;
 using Negocio;
 using Newtonsoft.Json;
 using System;
@@ -101,6 +102,19 @@ namespace WebApiFenosa.Controllers
                 return Ok(mensaje);
             }
             else return NotFound();
+        }
+
+
+        [HttpGet]
+        [Route("api/Migration/SincronizarCorteReconexion")]
+        public IHttpActionResult sincronizarCorteReconexion(int operarioId)
+        {
+            Sincronizar sync = ServiciosDA.sincronizar(operarioId);
+            if (sync.suministrosCortes == null & sync.suministroReconexion == null)
+            {
+                return NotFound();
+            }
+            else return Ok(sync);
         }
 
     }

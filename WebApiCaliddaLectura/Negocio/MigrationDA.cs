@@ -1,4 +1,5 @@
 ﻿using Entidades;
+using Entities;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -605,7 +606,7 @@ namespace Negocio
                             cmd.Parameters.Add("@Registro_Constancia", SqlDbType.VarChar).Value = r.registro_Constancia;
                             cmd.Parameters.Add("@Registro_Desplaza", SqlDbType.VarChar).Value = r.registro_Desplaza;
                             cmd.Parameters.Add("@Codigo_Resultado", SqlDbType.VarChar).Value = r.codigo_Resultado;
-                            cmd.Parameters.Add("@horaActa", SqlDbType.VarChar).Value = r.horaActa == null ? "" : r.horaActa ;
+                            cmd.Parameters.Add("@horaActa", SqlDbType.VarChar).Value = r.horaActa == null ? "" : r.horaActa;
                             cmd.Parameters.Add("@Suministro_Numero", SqlDbType.Int).Value = r.suministro_Numero;
                             SqlDataReader dr = cmd.ExecuteReader();
                             m = new Mensaje();
@@ -682,6 +683,112 @@ namespace Negocio
             }
 
         }
+
+        // Sincronizar
+
+        public static Sincronizar sincronizar(int operarioId)
+        {
+            try
+            {
+                Sincronizar sincronizar = new Sincronizar();
+                using (SqlConnection cn = new SqlConnection(db))
+                {
+                    cn.Open();
+
+                    sincronizar.sincronizarId = 1;
+
+                    SqlCommand cmd = cn.CreateCommand();
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = 0;
+                    cmd.CommandText = "USP_LIST_SUMINISTRO_CORTES";
+                    cmd.Parameters.Add("@ID_Operario", SqlDbType.Int).Value = operarioId;
+                    cmd.Parameters.Add("@Tipo", SqlDbType.VarChar).Value = "3";
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    if (dr.HasRows)
+                    {
+                        List<Suministro> suministroCorte = new List<Suministro>();
+                        int i = 1;
+                        while (dr.Read())
+                        {
+                            suministroCorte.Add(new Suministro()
+                            {
+                                iD_Suministro = Convert.ToInt32(dr["ID_Suministro"]),
+                                suministro_Numero = dr["Suministro_Numero"].ToString(),
+                                suministro_Medidor = dr["Suministro_Medidor"].ToString(),
+                                suministro_Cliente = dr["Suministro_Cliente"].ToString(),
+                                suministro_Direccion = dr["Suministro_Direccion"].ToString(),
+                                suministro_UnidadLectura = dr["Suministro_UnidadLectura"].ToString(),
+                                suministro_TipoProceso = dr["Suministro_TipoProceso"].ToString(),
+                                suministro_LecturaMinima = dr["Suministro_LecturaMinima"].ToString(),
+                                suministro_LecturaMaxima = dr["Suministro_LecturaMaxima"].ToString(),
+                                suministro_Fecha_Reg_Movil = dr["Suministro_Fecha_Reg_Movil"].ToString(),
+                                suministro_UltimoMes = dr["Suministro_UltimoMes"].ToString(),
+                                suministro_NoCortar = Convert.ToInt32(dr["Suministro_NoCortar"]),
+                                estado = Convert.ToInt32(dr["Estado"]),
+                                suministroOperario_Orden = Convert.ToInt32(dr["SuministroOperario_Orden"]),
+                                orden = i++,
+                                activo = 1
+                            });
+                        }
+                        sincronizar.suministrosCortes = suministroCorte;
+                    }
+                    else sincronizar.suministrosCortes = null;
+
+
+                    SqlCommand cmdR = cn.CreateCommand();
+                    cmdR.CommandType = CommandType.StoredProcedure;
+                    cmdR.CommandTimeout = 0;
+                    cmdR.CommandText = "USP_LIST_SUMINISTRO_CORTES";
+                    cmdR.Parameters.Add("@ID_Operario", SqlDbType.Int).Value = operarioId;
+                    cmdR.Parameters.Add("@Tipo", SqlDbType.VarChar).Value = "4";
+                    SqlDataReader drR = cmdR.ExecuteReader();
+
+                    if (dr.HasRows)
+                    {
+                        List<Suministro> suministroReconexiones = new List<Suministro>();
+                        int y = 1;
+                        while (dr.Read())
+                        {
+                            suministroReconexiones.Add(new Suministro()
+                            {
+                                iD_Suministro = Convert.ToInt32(dr["ID_Suministro"]),
+                                suministro_Numero = dr["Suministro_Numero"].ToString(),
+                                suministro_Medidor = dr["Suministro_Medidor"].ToString(),
+                                suministro_Cliente = dr["Suministro_Cliente"].ToString(),
+                                suministro_Direccion = dr["Suministro_Direccion"].ToString(),
+                                suministro_UnidadLectura = dr["Suministro_UnidadLectura"].ToString(),
+                                suministro_TipoProceso = dr["Suministro_TipoProceso"].ToString(),
+                                suministro_LecturaMinima = dr["Suministro_LecturaMinima"].ToString(),
+                                suministro_LecturaMaxima = dr["Suministro_LecturaMaxima"].ToString(),
+                                suministro_Fecha_Reg_Movil = dr["Suministro_Fecha_Reg_Movil"].ToString(),
+                                suministro_UltimoMes = dr["Suministro_UltimoMes"].ToString(),
+                                suministro_NoCortar = Convert.ToInt32(dr["Suministro_NoCortar"]),
+                                estado = Convert.ToInt32(dr["Estado"]),
+                                suministroOperario_Orden = Convert.ToInt32(dr["SuministroOperario_Orden"]),
+                                orden = y++,
+                                activo = 1
+                            });
+                        }
+                        sincronizar.suministroReconexion = suministroReconexiones;
+
+                    }
+                    else sincronizar.suministroReconexion = null;
+
+
+
+                    cn.Close();
+
+                }
+                return sincronizar;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+
 
     }
 }
