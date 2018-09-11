@@ -8,7 +8,7 @@ namespace Entidades
 {
     public class Registro
     {
-        public int iD_Registro { get; set; }
+        public int iD_Registro { get; set; } // tambien se utiliza para id_Reparto
         public int iD_Operario { get; set; }
         public int iD_Suministro { get; set; }  // para tipo 6 = medidor
         public int suministro_Numero { get; set; }
@@ -30,6 +30,7 @@ namespace Entidades
         public string suministroCliente { get; set; }
         public string suministroDireccion { get; set; }
         public int tipo { get; set; }
+        public int id_Observacion { get; set; }
         public List<RegistroPhoto> photos { get; set; }             
          
     }

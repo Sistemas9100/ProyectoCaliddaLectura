@@ -478,6 +478,54 @@ namespace Negocio
                             }
 
                         }
+                        else if (r.tipo == 5)
+                        {
+                            using (SqlCommand cmd = new SqlCommand("MOVIL_Reparto_save", con))
+                            {
+                                cmd.CommandTimeout = 0;
+                                cmd.CommandType = CommandType.StoredProcedure;
+                                cmd.Parameters.AddWithValue("@id_operario_reparto", r.iD_Operario);
+                                cmd.Parameters.AddWithValue("@ID_Registro", 1);
+                                cmd.Parameters.AddWithValue("@id_reparto", r.iD_Suministro);
+                                cmd.Parameters.AddWithValue("@registro_fecha_sqlite", r.registro_Fecha_SQLITE);
+                                cmd.Parameters.AddWithValue("@registro_latitud", r.registro_Latitud);
+                                cmd.Parameters.AddWithValue("@registro_longitud", r.registro_Longitud);
+                                cmd.Parameters.AddWithValue("@id_observacion", r.registro_Observacion);
+                                SqlDataReader dr = cmd.ExecuteReader();
+                                if (dr.HasRows)
+                                {
+                                    while (dr.Read())
+                                    {
+                                        lastId = dr.GetInt32(0);
+                                        if (lastId != 0)
+                                        {
+                                            foreach (var item in r.photos)
+                                            {
+                                                using (SqlConnection cn = new SqlConnection(db))
+                                                {
+                                                    SqlCommand cmd1 = cn.CreateCommand();
+                                                    cmd1.Connection.Open();
+                                                    cmd1.CommandType = CommandType.StoredProcedure;
+                                                    cmd1.CommandText = "MOVIL_Reparto_save_foto";
+                                                    cmd1.Parameters.AddWithValue("@ID_Registro", lastId);
+                                                    cmd1.Parameters.AddWithValue("@RutaFoto", item.rutaFoto);
+                                                    cmd1.ExecuteNonQuery();
+                                                    cmd1.Connection.Close();
+                                                }
+                                            }
+                                        }
+                                        m.mensaje = "Datos Enviados";
+
+                                    }
+                                }
+                                else
+                                {
+                                    m = null;
+                                    return m;
+                                }
+                            }
+
+                        }
                         else if (r.tipo == 6)
                         {
                             using (SqlCommand cmd = new SqlCommand("USP_SAVE_SUMINISTRO_ENCONTRADO", con))
@@ -563,6 +611,53 @@ namespace Negocio
                                 }
                             }
                         }
+                        else if (r.tipo == 9)
+                        {
+                            using (SqlCommand cmd = new SqlCommand("MOVIL_Reparto_selfi_save", con))
+                            {
+                                cmd.CommandTimeout = 0;
+                                cmd.CommandType = CommandType.StoredProcedure;
+                                cmd.Parameters.AddWithValue("@id_operario_reparto", r.iD_Operario);
+                                cmd.Parameters.AddWithValue("@ID_Registro", 1);
+                                cmd.Parameters.AddWithValue("@id_reparto", r.iD_Suministro);
+                                cmd.Parameters.AddWithValue("@registro_fecha_sqlite", r.registro_Fecha_SQLITE);
+                                cmd.Parameters.AddWithValue("@registro_latitud", r.registro_Latitud);
+                                cmd.Parameters.AddWithValue("@registro_longitud", r.registro_Longitud);
+                                cmd.Parameters.AddWithValue("@id_observacion", r.registro_Observacion);
+                                SqlDataReader dr = cmd.ExecuteReader();
+                                if (dr.HasRows)
+                                {
+                                    while (dr.Read())
+                                    {
+                                        lastId = dr.GetInt32(0);
+                                        if (lastId != 0)
+                                        {
+                                            foreach (var item in r.photos)
+                                            {
+                                                using (SqlConnection cn = new SqlConnection(db))
+                                                {
+                                                    SqlCommand cmd1 = cn.CreateCommand();
+                                                    cmd1.Connection.Open();
+                                                    cmd1.CommandType = CommandType.StoredProcedure;
+                                                    cmd1.CommandText = "MOVIL_Reparto_save_foto";
+                                                    cmd1.Parameters.AddWithValue("@ID_Registro", lastId);
+                                                    cmd1.Parameters.AddWithValue("@RutaFoto", item.rutaFoto);
+                                                    cmd1.ExecuteNonQuery();
+                                                    cmd1.Connection.Close();
+                                                }
+                                            }
+                                        }
+                                        m.mensaje = "Datos Enviados";
+
+                                    }
+                                }
+                                else
+                                {
+                                    m = null;
+                                    return m;
+                                }
+                            }
+                        }
                     }
 
                     con.Close();
@@ -621,7 +716,7 @@ namespace Negocio
                                         foreach (var itemS in r.photos)
                                         {
                                             SqlCommand cmds = con.CreateCommand();
-                                            cmds.CommandType = System.Data.CommandType.StoredProcedure;
+                                            cmds.CommandType = CommandType.StoredProcedure;
                                             cmds.CommandText = "USP_SAVE_REGISTRO_PHOTO_LECTURA";
                                             cmds.Parameters.Add("@ID_Registro", SqlDbType.Int).Value = lastId;
                                             cmds.Parameters.Add("@RutaFoto", SqlDbType.VarChar).Value = itemS.rutaFoto;
@@ -675,7 +770,7 @@ namespace Negocio
                                         foreach (var itemS in r.photos)
                                         {
                                             SqlCommand cmds = con.CreateCommand();
-                                            cmds.CommandType = System.Data.CommandType.StoredProcedure;
+                                            cmds.CommandType = CommandType.StoredProcedure;
                                             cmds.CommandText = "USP_SAVE_REGISTRO_PHOTO";
                                             cmds.Parameters.Add("@ID_Registro", SqlDbType.Int).Value = lastId;
                                             cmds.Parameters.Add("@RutaFoto", SqlDbType.VarChar).Value = itemS.rutaFoto;
