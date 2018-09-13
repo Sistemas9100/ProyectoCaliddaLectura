@@ -445,7 +445,7 @@ namespace Negocio
                                 cmd.Parameters.Add("@Registro_Constancia", SqlDbType.VarChar).Value = r.registro_Constancia;
                                 cmd.Parameters.Add("@Registro_Desplaza", SqlDbType.VarChar).Value = r.registro_Desplaza;
                                 cmd.Parameters.Add("@Codigo_Resultado", SqlDbType.VarChar).Value = r.codigo_Resultado;
-                                cmd.Parameters.Add("@horaActa", SqlDbType.VarChar).Value = r.horaActa == null ? "" : r.horaActa;
+                                cmd.Parameters.Add("@horaActa", SqlDbType.VarChar).Value = r.horaActa;
                                 cmd.Parameters.Add("@Suministro_Numero", SqlDbType.Int).Value = r.suministro_Numero;
                                 SqlDataReader dr = cmd.ExecuteReader();
                                 if (dr.HasRows)
@@ -756,12 +756,12 @@ namespace Negocio
                             cmd.Parameters.Add("@Registro_Constancia", SqlDbType.VarChar).Value = r.registro_Constancia;
                             cmd.Parameters.Add("@Registro_Desplaza", SqlDbType.VarChar).Value = r.registro_Desplaza;
                             cmd.Parameters.Add("@Codigo_Resultado", SqlDbType.VarChar).Value = r.codigo_Resultado;
-                            cmd.Parameters.Add("@horaActa", SqlDbType.VarChar).Value = r.horaActa == null ? "" : r.horaActa;
+                            cmd.Parameters.Add("@horaActa", SqlDbType.VarChar).Value = r.horaActa;
                             cmd.Parameters.Add("@Suministro_Numero", SqlDbType.Int).Value = r.suministro_Numero;
-                            SqlDataReader dr = cmd.ExecuteReader();
-                            m = new Mensaje();
+                            SqlDataReader dr = cmd.ExecuteReader();                        
                             if (dr.HasRows)
                             {
+                                m = new Mensaje();
                                 while (dr.Read())
                                 {
                                     lastId = dr.GetInt32(0);

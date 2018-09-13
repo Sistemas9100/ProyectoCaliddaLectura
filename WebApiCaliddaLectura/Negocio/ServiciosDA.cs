@@ -15,20 +15,22 @@ namespace Negocio
     {
         private static string db = ConfigurationManager.ConnectionStrings["conexionDsige"].ConnectionString;
 
-        public static Login GetOne(string user, string password)
+        public static Login GetOne(string user, string password, string version, string imei)
         {
             try
             {
-                Login item =null;
+                Login item = null;
                 using (SqlConnection cn = new SqlConnection(db))
                 {
                     cn.Open();
-                    using (SqlCommand cmd = new SqlCommand("USP_LOGIN", cn))
+                    using (SqlCommand cmd = new SqlCommand("USP_ACCESO_LOGIN", cn))
                     {
                         cmd.CommandTimeout = 0;
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.Add("@User", SqlDbType.VarChar).Value = user; 
-                        SqlDataReader dr = cmd.ExecuteReader();                       
+                        cmd.Parameters.Add("@User", SqlDbType.VarChar).Value = user;
+                        cmd.Parameters.Add("@version", SqlDbType.VarChar).Value = version;
+                        cmd.Parameters.Add("@imei", SqlDbType.VarChar).Value = imei;
+                        SqlDataReader dr = cmd.ExecuteReader();
                         while (dr.Read())
                         {
                             item = new Login();
@@ -46,7 +48,7 @@ namespace Negocio
                             else
                             {
                                 item.mensaje = "Pass";
-                            }                                                     
+                            }
                         }
                         dr.Close();
                     }

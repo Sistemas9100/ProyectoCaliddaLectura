@@ -18,9 +18,9 @@ namespace WebApiFenosa.Controllers
 
         [HttpGet]
         [Route("api/Migration/GetLogin")]
-        public IHttpActionResult GetLogin(string user, string password)
+        public IHttpActionResult GetLogin(string user, string password, string version, string imei)
         {
-            Login login = ServiciosDA.GetOne(user, password);
+            Login login = ServiciosDA.GetOne(user, password, version, imei);
 
             if (login != null)
             {
