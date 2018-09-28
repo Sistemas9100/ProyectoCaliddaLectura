@@ -17,5 +17,6 @@ namespace Entidades
         public List<TipoLectura> tipoLecturas { get; set; }
         public List<DetalleGrupo> detalleGrupos { get; set; }
         public List<Reparto> repartoLectura { get; set; }
+        public string mensaje { get; set; }
     }
 }

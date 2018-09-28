@@ -26,12 +26,12 @@ namespace Entidades
         public string registro_Constancia { get; set; } // para tipo 6 = contrato
         public string registro_Desplaza { get; set; }
         public string codigo_Resultado { get; set; }
-        public string horaActa { get; set; } 
+        public string horaActa { get; set; }
         public string suministroCliente { get; set; }
         public string suministroDireccion { get; set; }
         public int tipo { get; set; }
         public int id_Observacion { get; set; }
-        public List<RegistroPhoto> photos { get; set; }             
-         
+        public int lecturaManual { get; set; }
+        public List<RegistroPhoto> photos { get; set; }
     }
 }

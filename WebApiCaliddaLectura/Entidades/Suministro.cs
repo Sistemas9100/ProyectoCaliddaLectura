@@ -31,6 +31,7 @@ namespace Entidades
         public int valida5 { get; set; }
         public int valida6 { get; set; }
         public int tipoCliente { get; set; }
+        public int flagObservada { get; set; }        
         //Suminitro Corte        
         public int suministro_NoCortar { get; set; }
         // Lo que separa de Lectura y Cortes

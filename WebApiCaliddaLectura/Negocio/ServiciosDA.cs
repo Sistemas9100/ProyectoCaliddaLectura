@@ -15,7 +15,7 @@ namespace Negocio
     {
         private static string db = ConfigurationManager.ConnectionStrings["conexionDsige"].ConnectionString;
 
-        public static Login GetOne(string user, string password, string version, string imei)
+        public static Login GetOne(string user, string password, string version, string imei,string token)
         {
             try
             {
@@ -30,6 +30,7 @@ namespace Negocio
                         cmd.Parameters.Add("@User", SqlDbType.VarChar).Value = user;
                         cmd.Parameters.Add("@version", SqlDbType.VarChar).Value = version;
                         cmd.Parameters.Add("@imei", SqlDbType.VarChar).Value = imei;
+                        cmd.Parameters.Add("@token", SqlDbType.VarChar).Value = token;
                         SqlDataReader dr = cmd.ExecuteReader();
                         while (dr.Read())
                         {
@@ -380,9 +381,6 @@ namespace Negocio
                 throw e;
             }
         }
-
-
-
 
 
         /*

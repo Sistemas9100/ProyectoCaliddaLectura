@@ -56,7 +56,7 @@ namespace Negocio
             }
         }
 
-        public static Migracion getMigracion(int operarioId)
+        public static Migracion getMigracion(int operarioId, string version)
         {
             try
             {
@@ -64,286 +64,303 @@ namespace Negocio
 
                 migracion.migrationId = 1;
 
+
                 using (SqlConnection con = new SqlConnection(db))
                 {
                     con.Open();
 
-                    // Servicios
+                    // Version
 
-                    // Servicios
+                    SqlCommand cmdVersion = con.CreateCommand();
+                    cmdVersion.CommandTimeout = 0;
+                    cmdVersion.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmdVersion.CommandText = "USP_GET_VERSION";
+                    cmdVersion.Parameters.Add("@version", SqlDbType.VarChar).Value = version;
 
-                    SqlCommand cmdServicio = con.CreateCommand();
-                    cmdServicio.CommandTimeout = 0;
-                    cmdServicio.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmdServicio.CommandText = "USP_SERVICIOS";
-                    SqlDataReader drServicio = cmdServicio.ExecuteReader();
-                    if (drServicio.HasRows)
+                    SqlDataReader drVersion = cmdVersion.ExecuteReader();
+                    if (!drVersion.HasRows)
                     {
-                        List<Servicio> servicio = new List<Servicio>();
-                        while (drServicio.Read())
-                        {
-                            servicio.Add(new Servicio()
-                            {
-                                id_servicio = drServicio.GetInt32(0),
-                                nombre_servicio = drServicio.GetString(1),
-                                estado = drServicio.GetInt32(2)
-                            });
-                        }
-                        migracion.servicios = servicio;
+                        migracion.mensaje = "Actualizar Versión del Aplicativo.";
                     }
-                    else migracion.servicios = null;
-
-
-                    // Parametro
-
-                    SqlCommand cmdParametro = con.CreateCommand();
-                    cmdParametro.CommandTimeout = 0;
-                    cmdParametro.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmdParametro.CommandText = "USP_PARAMETROS";
-                    SqlDataReader drParametro = cmdParametro.ExecuteReader();
-                    if (drParametro.HasRows)
+                    else
                     {
-                        List<Parametro> parametro = new List<Parametro>();
-                        while (drParametro.Read())
+                        // Servicios
+
+                        SqlCommand cmdServicio = con.CreateCommand();
+                        cmdServicio.CommandTimeout = 0;
+                        cmdServicio.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmdServicio.CommandText = "USP_SERVICIOS";
+                        SqlDataReader drServicio = cmdServicio.ExecuteReader();
+                        if (drServicio.HasRows)
                         {
-                            parametro.Add(new Parametro()
+                            List<Servicio> servicio = new List<Servicio>();
+                            while (drServicio.Read())
                             {
-                                id_Configuracion = drParametro.GetInt32(0),
-                                nombre_parametro = drParametro.GetString(1),
-                                valor = drParametro.GetInt32(2)
-                            });
+                                servicio.Add(new Servicio()
+                                {
+                                    id_servicio = drServicio.GetInt32(0),
+                                    nombre_servicio = drServicio.GetString(1),
+                                    estado = drServicio.GetInt32(2)
+                                });
+                            }
+                            migracion.servicios = servicio;
                         }
-                        migracion.parametros = parametro;
-
-                    }
-                    else migracion.parametros = null;
+                        else migracion.servicios = null;
 
 
-                    // Suministro
+                        // Parametro
 
-
-                    SqlCommand cmdSuministro = con.CreateCommand();
-                    cmdSuministro.CommandTimeout = 0;
-                    cmdSuministro.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmdSuministro.CommandText = "USP_LIST_SUMINISTRO";
-                    cmdSuministro.Parameters.Add("@ID_Operario", SqlDbType.Int).Value = operarioId;
-                    SqlDataReader drSuministro = cmdSuministro.ExecuteReader();
-                    if (drSuministro.HasRows)
-                    {
-                        List<Suministro> suministro = new List<Suministro>();
-                        int i = 1;
-                        while (drSuministro.Read())
+                        SqlCommand cmdParametro = con.CreateCommand();
+                        cmdParametro.CommandTimeout = 0;
+                        cmdParametro.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmdParametro.CommandText = "USP_PARAMETROS";
+                        SqlDataReader drParametro = cmdParametro.ExecuteReader();
+                        if (drParametro.HasRows)
                         {
-                            suministro.Add(new Suministro()
+                            List<Parametro> parametro = new List<Parametro>();
+                            while (drParametro.Read())
                             {
-                                iD_Suministro = drSuministro.GetInt32(0),
-                                suministro_Numero = drSuministro.GetString(1),
-                                suministro_Medidor = drSuministro.GetString(2),
-                                suministro_Cliente = drSuministro.GetString(3),
-                                suministro_Direccion = drSuministro.GetString(4),
-                                suministro_UnidadLectura = drSuministro.GetString(5),
-                                suministro_TipoProceso = drSuministro.GetString(6),
-                                suministro_LecturaMinima = drSuministro.GetString(7),
-                                suministro_LecturaMaxima = drSuministro.GetString(8),
-                                suministro_Fecha_Reg_Movil = drSuministro.GetDateTime(9).ToString("dd/MM/yyyy"),
-                                suministro_UltimoMes = drSuministro.GetString(10),
-                                consumoPromedio = drSuministro.GetDecimal(11),
-                                lecturaAnterior = drSuministro.GetString(12),
-                                suministro_Instalacion = drSuministro.GetString(13),
-                                valida1 = drSuministro.GetInt32(14),
-                                valida2 = drSuministro.GetInt32(15),
-                                valida3 = drSuministro.GetInt32(16),
-                                valida4 = drSuministro.GetInt32(17),
-                                valida5 = drSuministro.GetInt32(18),
-                                valida6 = drSuministro.GetInt32(19),
-                                tipoCliente = drSuministro.GetInt32(20),
-                                estado = drSuministro.GetInt32(21),
-                                suministroOperario_Orden = drSuministro.GetInt32(22),
-                                orden = i++,
-                                activo = 1
-                            });
+                                parametro.Add(new Parametro()
+                                {
+                                    id_Configuracion = drParametro.GetInt32(0),
+                                    nombre_parametro = drParametro.GetString(1),
+                                    valor = drParametro.GetInt32(2)
+                                });
+                            }
+                            migracion.parametros = parametro;
+
                         }
-                        migracion.suministroLecturas = suministro;
-
-                    }
-                    else migracion.suministroLecturas = null;
+                        else migracion.parametros = null;
 
 
-                    // SuministroCorte 
+                        // Suministro
 
-                    SqlCommand cmdCortes = con.CreateCommand();
-                    cmdCortes.CommandTimeout = 0;
-                    cmdCortes.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmdCortes.CommandText = "USP_LIST_SUMINISTRO_CORTES";
-                    cmdCortes.Parameters.Add("@ID_Operario", SqlDbType.Int).Value = operarioId;
-                    cmdCortes.Parameters.Add("@Tipo", SqlDbType.VarChar).Value = "3";
-                    SqlDataReader drCortes = cmdCortes.ExecuteReader();
-                    if (drCortes.HasRows)
-                    {
-                        List<Suministro> suministroCorte = new List<Suministro>();
-                        int y = 1;
-                        while (drCortes.Read())
+
+                        SqlCommand cmdSuministro = con.CreateCommand();
+                        cmdSuministro.CommandTimeout = 0;
+                        cmdSuministro.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmdSuministro.CommandText = "USP_LIST_SUMINISTRO";
+                        cmdSuministro.Parameters.Add("@ID_Operario", SqlDbType.Int).Value = operarioId;
+                        SqlDataReader drSuministro = cmdSuministro.ExecuteReader();
+                        if (drSuministro.HasRows)
                         {
-                            suministroCorte.Add(new Suministro()
+                            List<Suministro> suministro = new List<Suministro>();
+                            int i = 1;
+                            while (drSuministro.Read())
                             {
-                                iD_Suministro = drCortes.GetInt32(0),
-                                suministro_Numero = drCortes.GetString(1),
-                                suministro_Medidor = drCortes.GetString(2),
-                                suministro_Cliente = drCortes.GetString(3),
-                                suministro_Direccion = drCortes.GetString(4),
-                                suministro_UnidadLectura = drCortes.GetString(5),
-                                suministro_TipoProceso = drCortes.GetString(6),
-                                suministro_LecturaMinima = drCortes.GetString(7),
-                                suministro_LecturaMaxima = drCortes.GetString(8),
-                                suministro_Fecha_Reg_Movil = drCortes.GetDateTime(9).ToString("dd/MM/yyyy"),
-                                suministro_UltimoMes = drCortes.GetString(10),
-                                suministro_NoCortar = drCortes.GetInt32(11),
-                                estado = drCortes.GetInt32(12),
-                                suministroOperario_Orden = drCortes.GetInt32(13),
-                                orden = y++,
-                                activo = 1
-                            });
+                                suministro.Add(new Suministro()
+                                {
+                                    iD_Suministro = drSuministro.GetInt32(0),
+                                    suministro_Numero = drSuministro.GetString(1),
+                                    suministro_Medidor = drSuministro.GetString(2),
+                                    suministro_Cliente = drSuministro.GetString(3),
+                                    suministro_Direccion = drSuministro.GetString(4),
+                                    suministro_UnidadLectura = drSuministro.GetString(5),
+                                    suministro_TipoProceso = drSuministro.GetString(6),
+                                    suministro_LecturaMinima = drSuministro.GetString(7),
+                                    suministro_LecturaMaxima = drSuministro.GetString(8),
+                                    suministro_Fecha_Reg_Movil = drSuministro.GetDateTime(9).ToString("dd/MM/yyyy"),
+                                    suministro_UltimoMes = drSuministro.GetString(10),
+                                    consumoPromedio = drSuministro.GetDecimal(11),
+                                    lecturaAnterior = drSuministro.GetString(12),
+                                    suministro_Instalacion = drSuministro.GetString(13),
+                                    valida1 = drSuministro.GetInt32(14),
+                                    valida2 = drSuministro.GetInt32(15),
+                                    valida3 = drSuministro.GetInt32(16),
+                                    valida4 = drSuministro.GetInt32(17),
+                                    valida5 = drSuministro.GetInt32(18),
+                                    valida6 = drSuministro.GetInt32(19),
+                                    tipoCliente = drSuministro.GetInt32(20),
+                                    estado = drSuministro.GetInt32(21),
+                                    suministroOperario_Orden = drSuministro.GetInt32(22),
+                                    flagObservada = drSuministro.GetInt32(23),
+                                    orden = i++,
+                                    activo = 1
+                                });
+                            }
+                            migracion.suministroLecturas = suministro;
+
                         }
-                        migracion.suministroCortes = suministroCorte;
+                        else migracion.suministroLecturas = null;
 
-                    }
-                    else migracion.suministroCortes = null;
 
-                    // SuministroReconexiones
+                        // SuministroCorte 
 
-                    SqlCommand cmdReconexiones = con.CreateCommand();
-                    cmdReconexiones.CommandTimeout = 0;
-                    cmdReconexiones.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmdReconexiones.CommandText = "USP_LIST_SUMINISTRO_CORTES";
-                    cmdReconexiones.Parameters.Add("@ID_Operario", SqlDbType.Int).Value = operarioId;
-                    cmdReconexiones.Parameters.Add("@Tipo", SqlDbType.VarChar).Value = "4";
-
-                    SqlDataReader drReconexiones = cmdReconexiones.ExecuteReader();
-                    if (drReconexiones.HasRows)
-                    {
-                        List<Suministro> suministroReconexiones = new List<Suministro>();
-                        int z = 1;
-                        while (drReconexiones.Read())
+                        SqlCommand cmdCortes = con.CreateCommand();
+                        cmdCortes.CommandTimeout = 0;
+                        cmdCortes.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmdCortes.CommandText = "USP_LIST_SUMINISTRO_CORTES";
+                        cmdCortes.Parameters.Add("@ID_Operario", SqlDbType.Int).Value = operarioId;
+                        cmdCortes.Parameters.Add("@Tipo", SqlDbType.VarChar).Value = "3";
+                        SqlDataReader drCortes = cmdCortes.ExecuteReader();
+                        if (drCortes.HasRows)
                         {
-                            suministroReconexiones.Add(new Suministro()
+                            List<Suministro> suministroCorte = new List<Suministro>();
+                            int y = 1;
+                            while (drCortes.Read())
                             {
-                                iD_Suministro = drReconexiones.GetInt32(0),
-                                suministro_Numero = drReconexiones.GetString(1),
-                                suministro_Medidor = drReconexiones.GetString(2),
-                                suministro_Cliente = drReconexiones.GetString(3),
-                                suministro_Direccion = drReconexiones.GetString(4),
-                                suministro_UnidadLectura = drReconexiones.GetString(5),
-                                suministro_TipoProceso = drReconexiones.GetString(6),
-                                suministro_LecturaMinima = drReconexiones.GetString(7),
-                                suministro_LecturaMaxima = drReconexiones.GetString(8),
-                                suministro_Fecha_Reg_Movil = drReconexiones.GetDateTime(9).ToString("dd/MM/yyyy"),
-                                suministro_UltimoMes = drReconexiones.GetString(10),
-                                suministro_NoCortar = drReconexiones.GetInt32(11),
-                                estado = drReconexiones.GetInt32(12),
-                                suministroOperario_Orden = drReconexiones.GetInt32(13),
-                                orden = z++,
-                                activo = 1
-                            });
+                                suministroCorte.Add(new Suministro()
+                                {
+                                    iD_Suministro = drCortes.GetInt32(0),
+                                    suministro_Numero = drCortes.GetString(1),
+                                    suministro_Medidor = drCortes.GetString(2),
+                                    suministro_Cliente = drCortes.GetString(3),
+                                    suministro_Direccion = drCortes.GetString(4),
+                                    suministro_UnidadLectura = drCortes.GetString(5),
+                                    suministro_TipoProceso = drCortes.GetString(6),
+                                    suministro_LecturaMinima = drCortes.GetString(7),
+                                    suministro_LecturaMaxima = drCortes.GetString(8),
+                                    suministro_Fecha_Reg_Movil = drCortes.GetDateTime(9).ToString("dd/MM/yyyy"),
+                                    suministro_UltimoMes = drCortes.GetString(10),
+                                    suministro_NoCortar = drCortes.GetInt32(11),
+                                    estado = drCortes.GetInt32(12),
+                                    suministroOperario_Orden = drCortes.GetInt32(13),
+                                    orden = y++,
+                                    activo = 1
+                                });
+                            }
+                            migracion.suministroCortes = suministroCorte;
+
                         }
-                        migracion.suministroReconexiones = suministroReconexiones;
+                        else migracion.suministroCortes = null;
 
-                    }
-                    else migracion.suministroReconexiones = null;
+                        // SuministroReconexiones
 
+                        SqlCommand cmdReconexiones = con.CreateCommand();
+                        cmdReconexiones.CommandTimeout = 0;
+                        cmdReconexiones.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmdReconexiones.CommandText = "USP_LIST_SUMINISTRO_CORTES";
+                        cmdReconexiones.Parameters.Add("@ID_Operario", SqlDbType.Int).Value = operarioId;
+                        cmdReconexiones.Parameters.Add("@Tipo", SqlDbType.VarChar).Value = "4";
 
-                    // Tipo Lectura
-
-                    SqlCommand cmdTipo = con.CreateCommand();
-                    cmdTipo.CommandTimeout = 0;
-                    cmdTipo.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmdTipo.CommandText = "USP_LIST_TIPO_LECTURA";
-                    SqlDataReader drTipo = cmdTipo.ExecuteReader();
-                    if (drTipo.HasRows)
-                    {
-                        List<TipoLectura> tipoLectura = new List<TipoLectura>();
-                        while (drTipo.Read())
+                        SqlDataReader drReconexiones = cmdReconexiones.ExecuteReader();
+                        if (drReconexiones.HasRows)
                         {
-                            tipoLectura.Add(new TipoLectura()
+                            List<Suministro> suministroReconexiones = new List<Suministro>();
+                            int z = 1;
+                            while (drReconexiones.Read())
                             {
-                                iD_TipoLectura = drTipo.GetInt32(0),
-                                tipoLectura_Descripcion = drTipo.GetString(1),
-                                tipoLectura_Abreviatura = drTipo.GetString(2),
-                                tipoLectura_Estado = drTipo.GetString(3)
-                            });
+                                suministroReconexiones.Add(new Suministro()
+                                {
+                                    iD_Suministro = drReconexiones.GetInt32(0),
+                                    suministro_Numero = drReconexiones.GetString(1),
+                                    suministro_Medidor = drReconexiones.GetString(2),
+                                    suministro_Cliente = drReconexiones.GetString(3),
+                                    suministro_Direccion = drReconexiones.GetString(4),
+                                    suministro_UnidadLectura = drReconexiones.GetString(5),
+                                    suministro_TipoProceso = drReconexiones.GetString(6),
+                                    suministro_LecturaMinima = drReconexiones.GetString(7),
+                                    suministro_LecturaMaxima = drReconexiones.GetString(8),
+                                    suministro_Fecha_Reg_Movil = drReconexiones.GetDateTime(9).ToString("dd/MM/yyyy"),
+                                    suministro_UltimoMes = drReconexiones.GetString(10),
+                                    suministro_NoCortar = drReconexiones.GetInt32(11),
+                                    estado = drReconexiones.GetInt32(12),
+                                    suministroOperario_Orden = drReconexiones.GetInt32(13),
+                                    orden = z++,
+                                    activo = 1
+                                });
+                            }
+                            migracion.suministroReconexiones = suministroReconexiones;
+
                         }
-
-                        migracion.tipoLecturas = tipoLectura;
-
-                    }
-                    else migracion.tipoLecturas = null;
+                        else migracion.suministroReconexiones = null;
 
 
-                    //Detalle Grupo
+                        // Tipo Lectura
 
-                    SqlCommand cmdGrupo = con.CreateCommand();
-                    cmdGrupo.CommandTimeout = 0;
-                    cmdGrupo.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmdGrupo.CommandText = "USP_LIST_DETALLE_GRUPO";
-                    SqlDataReader rdGrupo = cmdGrupo.ExecuteReader();
-                    if (rdGrupo.HasRows)
-                    {
-                        List<DetalleGrupo> detalleGrupo = new List<DetalleGrupo>();
-                        int j = 1;
-                        while (rdGrupo.Read())
+                        SqlCommand cmdTipo = con.CreateCommand();
+                        cmdTipo.CommandTimeout = 0;
+                        cmdTipo.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmdTipo.CommandText = "USP_LIST_TIPO_LECTURA";
+                        SqlDataReader drTipo = cmdTipo.ExecuteReader();
+                        if (drTipo.HasRows)
                         {
-                            detalleGrupo.Add(new DetalleGrupo()
+                            List<TipoLectura> tipoLectura = new List<TipoLectura>();
+                            while (drTipo.Read())
                             {
-                                id = j++,
-                                iD_DetalleGrupo = rdGrupo.GetInt32(0),
-                                grupo = rdGrupo.GetString(1),
-                                codigo = rdGrupo.GetString(2),
-                                descripcion = rdGrupo.GetString(3),
-                                abreviatura = rdGrupo.GetString(4),
-                                estado = rdGrupo.GetString(5),
-                                descripcionGrupo = rdGrupo.GetString(6),
-                                pideFoto = rdGrupo.GetString(7),
-                                noPideFoto = rdGrupo.GetString(8),
-                                pideLectura = rdGrupo.GetString(9),
-                                id_Servicio = rdGrupo.GetInt32(10)
-                            });
+                                tipoLectura.Add(new TipoLectura()
+                                {
+                                    iD_TipoLectura = drTipo.GetInt32(0),
+                                    tipoLectura_Descripcion = drTipo.GetString(1),
+                                    tipoLectura_Abreviatura = drTipo.GetString(2),
+                                    tipoLectura_Estado = drTipo.GetString(3)
+                                });
+                            }
+
+                            migracion.tipoLecturas = tipoLectura;
+
                         }
-                        migracion.detalleGrupos = detalleGrupo;
-                    }
-                    else migracion.detalleGrupos = null;
+                        else migracion.tipoLecturas = null;
 
 
-                    // Reparto
+                        //Detalle Grupo
 
-                    SqlCommand cmdReparto = con.CreateCommand();
-                    cmdReparto.CommandTimeout = 0;
-                    cmdReparto.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmdReparto.CommandText = "MOVIL_Reparto_list";
-                    cmdReparto.Parameters.AddWithValue("@id_operario_reparto", operarioId);
-                    SqlDataReader rdReparto = cmdReparto.ExecuteReader();
-                    if (rdReparto.HasRows)
-                    {
-                        List<Reparto> reparto = new List<Reparto>();
-                        while (rdReparto.Read())
+                        SqlCommand cmdGrupo = con.CreateCommand();
+                        cmdGrupo.CommandTimeout = 0;
+                        cmdGrupo.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmdGrupo.CommandText = "USP_LIST_DETALLE_GRUPO";
+                        SqlDataReader rdGrupo = cmdGrupo.ExecuteReader();
+                        if (rdGrupo.HasRows)
                         {
-                            reparto.Add(new Reparto()
+                            List<DetalleGrupo> detalleGrupo = new List<DetalleGrupo>();
+                            int j = 1;
+                            while (rdGrupo.Read())
                             {
-                                id_Reparto = Convert.ToInt32(rdReparto["id_Reparto"]),
-                                id_Operario_Reparto = Convert.ToInt32(rdReparto["id_Operario_Reparto"]),
-                                foto_Reparto = Convert.ToInt32(rdReparto["foto_Reparto"]),
-                                estado = Convert.ToInt32(rdReparto["estado"]),
-                                activo = Convert.ToInt32(rdReparto["activo"]),
-                                Suministro_Medidor_reparto = rdReparto["Suministro_Medidor"].ToString(),
-                                Suministro_Numero_reparto = rdReparto["Suministro_Numero"].ToString(),
-                                Cod_Actividad_Reparto = rdReparto["Cod_Actividad_Reparto"].ToString(),
-                                Cod_Orden_Reparto = rdReparto["Cod_Orden_Reparto"].ToString(),
-                                Direccion_Reparto = rdReparto["Direccion_Reparto"].ToString(),
-                                Cliente_Reparto = rdReparto["Cliente_Reparto"].ToString(),
-                                CodigoBarra = rdReparto["CodigoBarra"].ToString()
-                            });
+                                detalleGrupo.Add(new DetalleGrupo()
+                                {
+                                    id = j++,
+                                    iD_DetalleGrupo = rdGrupo.GetInt32(0),
+                                    grupo = rdGrupo.GetString(1),
+                                    codigo = rdGrupo.GetString(2),
+                                    descripcion = rdGrupo.GetString(3),
+                                    abreviatura = rdGrupo.GetString(4),
+                                    estado = rdGrupo.GetString(5),
+                                    descripcionGrupo = rdGrupo.GetString(6),
+                                    pideFoto = rdGrupo.GetString(7),
+                                    noPideFoto = rdGrupo.GetString(8),
+                                    pideLectura = rdGrupo.GetString(9),
+                                    id_Servicio = rdGrupo.GetInt32(10)
+                                });
+                            }
+                            migracion.detalleGrupos = detalleGrupo;
                         }
-                        migracion.repartoLectura = reparto;
+                        else migracion.detalleGrupos = null;
+
+
+                        // Reparto
+
+                        SqlCommand cmdReparto = con.CreateCommand();
+                        cmdReparto.CommandTimeout = 0;
+                        cmdReparto.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmdReparto.CommandText = "MOVIL_Reparto_list";
+                        cmdReparto.Parameters.AddWithValue("@id_operario_reparto", operarioId);
+                        SqlDataReader rdReparto = cmdReparto.ExecuteReader();
+                        if (rdReparto.HasRows)
+                        {
+                            List<Reparto> reparto = new List<Reparto>();
+                            while (rdReparto.Read())
+                            {
+                                reparto.Add(new Reparto()
+                                {
+                                    id_Reparto = Convert.ToInt32(rdReparto["id_Reparto"]),
+                                    id_Operario_Reparto = Convert.ToInt32(rdReparto["id_Operario_Reparto"]),
+                                    foto_Reparto = Convert.ToInt32(rdReparto["foto_Reparto"]),
+                                    estado = Convert.ToInt32(rdReparto["estado"]),
+                                    activo = Convert.ToInt32(rdReparto["activo"]),
+                                    Suministro_Medidor_reparto = rdReparto["Suministro_Medidor"].ToString(),
+                                    Suministro_Numero_reparto = rdReparto["Suministro_Numero"].ToString(),
+                                    Cod_Actividad_Reparto = rdReparto["Cod_Actividad_Reparto"].ToString(),
+                                    Cod_Orden_Reparto = rdReparto["Cod_Orden_Reparto"].ToString(),
+                                    Direccion_Reparto = rdReparto["Direccion_Reparto"].ToString(),
+                                    Cliente_Reparto = rdReparto["Cliente_Reparto"].ToString(),
+                                    CodigoBarra = rdReparto["CodigoBarra"].ToString()
+                                });
+                            }
+                            migracion.repartoLectura = reparto;
+                        }
+                        else migracion.repartoLectura = null;
+                        migracion.mensaje = "Sincronización Completada.";
                     }
-                    else migracion.repartoLectura = null;
 
                     con.Close();
                 }
@@ -370,7 +387,7 @@ namespace Negocio
                     {
                         if (r.tipo == 1 || r.tipo == 2)
                         {
-                            using (SqlCommand cmd = new SqlCommand("USP_SAVE_REGISTRO_LECTURA", con))
+                            using (SqlCommand cmd = new SqlCommand("USP_SAVE_REGISTRO_LECTURA2", con))
                             {
                                 cmd.CommandTimeout = 0;
                                 cmd.CommandType = CommandType.StoredProcedure;
@@ -391,6 +408,7 @@ namespace Negocio
                                 cmd.Parameters.Add("@Registro_Constancia", SqlDbType.VarChar).Value = r.registro_Constancia;
                                 cmd.Parameters.Add("@Registro_Desplaza", SqlDbType.VarChar).Value = r.registro_Desplaza;
                                 cmd.Parameters.Add("@Suministro_Numero", SqlDbType.Int).Value = r.suministro_Numero;
+                                cmd.Parameters.Add("@LecturaManual", SqlDbType.Int).Value = r.lecturaManual;
                                 SqlDataReader dr = cmd.ExecuteReader();
                                 if (dr.HasRows)
                                 {
@@ -406,6 +424,8 @@ namespace Negocio
                                                 cmds.CommandText = "USP_SAVE_REGISTRO_PHOTO_LECTURA";
                                                 cmds.Parameters.Add("@ID_Registro", SqlDbType.Int).Value = lastId;
                                                 cmds.Parameters.Add("@RutaFoto", SqlDbType.VarChar).Value = itemS.rutaFoto;
+                                                cmds.Parameters.Add("@latitud", SqlDbType.VarChar).Value = itemS.latitud;
+                                                cmds.Parameters.Add("@longitud", SqlDbType.VarChar).Value = itemS.longitud;
                                                 cmds.ExecuteNonQuery();
                                             }
                                         }
@@ -462,6 +482,8 @@ namespace Negocio
                                                 cmds.CommandText = "USP_SAVE_REGISTRO_PHOTO";
                                                 cmds.Parameters.Add("@ID_Registro", SqlDbType.Int).Value = lastId;
                                                 cmds.Parameters.Add("@RutaFoto", SqlDbType.VarChar).Value = itemS.rutaFoto;
+                                                cmds.Parameters.Add("@latitud", SqlDbType.VarChar).Value = itemS.latitud;
+                                                cmds.Parameters.Add("@longitud", SqlDbType.VarChar).Value = itemS.longitud;
                                                 cmds.ExecuteNonQuery();
                                             }
 
@@ -509,6 +531,8 @@ namespace Negocio
                                                     cmd1.CommandText = "MOVIL_Reparto_save_foto";
                                                     cmd1.Parameters.AddWithValue("@ID_Registro", lastId);
                                                     cmd1.Parameters.AddWithValue("@RutaFoto", item.rutaFoto);
+                                                    cmd1.Parameters.AddWithValue("@latitud", item.latitud);
+                                                    cmd1.Parameters.AddWithValue("@longitud", item.longitud);
                                                     cmd1.ExecuteNonQuery();
                                                     cmd1.Connection.Close();
                                                 }
@@ -556,6 +580,8 @@ namespace Negocio
                                                 cmds.CommandText = "USP_SAVE_REGISTRO_PHOTO_LECTURA";
                                                 cmds.Parameters.Add("@ID_Registro", SqlDbType.Int).Value = lastId;
                                                 cmds.Parameters.Add("@RutaFoto", SqlDbType.VarChar).Value = itemS.rutaFoto;
+                                                cmds.Parameters.Add("@latitud", SqlDbType.VarChar).Value = itemS.latitud;
+                                                cmds.Parameters.Add("@longitud", SqlDbType.VarChar).Value = itemS.longitud;
                                                 cmds.ExecuteNonQuery();
                                             }
                                         }
@@ -598,6 +624,8 @@ namespace Negocio
                                                 cmds.CommandText = "USP_SAVE_REGISTRO_PHOTO_LECTURA";
                                                 cmds.Parameters.Add("@ID_Registro", SqlDbType.Int).Value = lastId;
                                                 cmds.Parameters.Add("@RutaFoto", SqlDbType.VarChar).Value = itemS.rutaFoto;
+                                                cmds.Parameters.Add("@latitud", SqlDbType.VarChar).Value = itemS.latitud;
+                                                cmds.Parameters.Add("@longitud", SqlDbType.VarChar).Value = itemS.longitud;
                                                 cmds.ExecuteNonQuery();
                                             }
                                         }
@@ -642,6 +670,8 @@ namespace Negocio
                                                     cmd1.CommandText = "MOVIL_Reparto_save_foto";
                                                     cmd1.Parameters.AddWithValue("@ID_Registro", lastId);
                                                     cmd1.Parameters.AddWithValue("@RutaFoto", item.rutaFoto);
+                                                    cmd1.Parameters.AddWithValue("@latitud", item.latitud);
+                                                    cmd1.Parameters.AddWithValue("@longitud", item.longitud);
                                                     cmd1.ExecuteNonQuery();
                                                     cmd1.Connection.Close();
                                                 }
@@ -683,7 +713,7 @@ namespace Negocio
                     con.Open();
                     if (r.tipo == 2 || r.tipo == 1)
                     {
-                        using (SqlCommand cmd = new SqlCommand("USP_SAVE_REGISTRO_LECTURA", con))
+                        using (SqlCommand cmd = new SqlCommand("USP_SAVE_REGISTRO_LECTURA2", con))
                         {
                             cmd.CommandTimeout = 0;
                             cmd.CommandType = CommandType.StoredProcedure;
@@ -704,6 +734,7 @@ namespace Negocio
                             cmd.Parameters.Add("@Registro_Constancia", SqlDbType.VarChar).Value = r.registro_Constancia;
                             cmd.Parameters.Add("@Registro_Desplaza", SqlDbType.VarChar).Value = r.registro_Desplaza;
                             cmd.Parameters.Add("@Suministro_Numero", SqlDbType.Int).Value = r.suministro_Numero;
+                            cmd.Parameters.Add("@LecturaManual", SqlDbType.Int).Value = r.lecturaManual;
                             SqlDataReader dr = cmd.ExecuteReader();
                             m = new Mensaje();
                             if (dr.HasRows)
@@ -720,6 +751,8 @@ namespace Negocio
                                             cmds.CommandText = "USP_SAVE_REGISTRO_PHOTO_LECTURA";
                                             cmds.Parameters.Add("@ID_Registro", SqlDbType.Int).Value = lastId;
                                             cmds.Parameters.Add("@RutaFoto", SqlDbType.VarChar).Value = itemS.rutaFoto;
+                                            cmds.Parameters.Add("@latitud", SqlDbType.VarChar).Value = itemS.latitud;
+                                            cmds.Parameters.Add("@longitud", SqlDbType.VarChar).Value = itemS.longitud;
                                             cmds.ExecuteNonQuery();
                                         }
                                     }
@@ -758,7 +791,7 @@ namespace Negocio
                             cmd.Parameters.Add("@Codigo_Resultado", SqlDbType.VarChar).Value = r.codigo_Resultado;
                             cmd.Parameters.Add("@horaActa", SqlDbType.VarChar).Value = r.horaActa;
                             cmd.Parameters.Add("@Suministro_Numero", SqlDbType.Int).Value = r.suministro_Numero;
-                            SqlDataReader dr = cmd.ExecuteReader();                        
+                            SqlDataReader dr = cmd.ExecuteReader();
                             if (dr.HasRows)
                             {
                                 m = new Mensaje();
@@ -774,6 +807,8 @@ namespace Negocio
                                             cmds.CommandText = "USP_SAVE_REGISTRO_PHOTO";
                                             cmds.Parameters.Add("@ID_Registro", SqlDbType.Int).Value = lastId;
                                             cmds.Parameters.Add("@RutaFoto", SqlDbType.VarChar).Value = itemS.rutaFoto;
+                                            cmds.Parameters.Add("@latitud", SqlDbType.VarChar).Value = itemS.latitud;
+                                            cmds.Parameters.Add("@longitud", SqlDbType.VarChar).Value = itemS.longitud;
                                             cmds.ExecuteNonQuery();
                                         }
                                     }
@@ -817,6 +852,8 @@ namespace Negocio
                                             cmds.CommandText = "USP_SAVE_REGISTRO_PHOTO_LECTURA";
                                             cmds.Parameters.Add("@ID_Registro", SqlDbType.Int).Value = lastId;
                                             cmds.Parameters.Add("@RutaFoto", SqlDbType.VarChar).Value = itemS.rutaFoto;
+                                            cmds.Parameters.Add("@latitud", SqlDbType.VarChar).Value = itemS.latitud;
+                                            cmds.Parameters.Add("@longitud", SqlDbType.VarChar).Value = itemS.longitud;
                                             cmds.ExecuteNonQuery();
                                         }
                                     }
@@ -859,6 +896,8 @@ namespace Negocio
                                             cmds.CommandText = "USP_SAVE_REGISTRO_PHOTO_LECTURA";
                                             cmds.Parameters.Add("@ID_Registro", SqlDbType.Int).Value = lastId;
                                             cmds.Parameters.Add("@RutaFoto", SqlDbType.VarChar).Value = itemS.rutaFoto;
+                                            cmds.Parameters.Add("@latitud", SqlDbType.VarChar).Value = itemS.latitud;
+                                            cmds.Parameters.Add("@longitud", SqlDbType.VarChar).Value = itemS.longitud;
                                             cmds.ExecuteNonQuery();
                                         }
                                     }
@@ -884,7 +923,6 @@ namespace Negocio
         }
 
         // Sincronizar
-
         public static Sincronizar sincronizar(int operarioId)
         {
             try
@@ -987,7 +1025,73 @@ namespace Negocio
             }
         }
 
+        // Observadas 
 
+        public static List<Suministro> getObservadas(int operarioId)
+        {
+            try
+            {
+                List<Suministro> suministro = null;
+
+                using (SqlConnection con = new SqlConnection(db))
+                {
+                    con.Open();
+
+                    SqlCommand cmdSuministro = con.CreateCommand();
+                    cmdSuministro.CommandTimeout = 0;
+                    cmdSuministro.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmdSuministro.CommandText = "USP_LIST_SUMINISTRO";
+                    cmdSuministro.Parameters.Add("@ID_Operario", SqlDbType.Int).Value = operarioId;
+                    SqlDataReader drSuministro = cmdSuministro.ExecuteReader();
+                    if (drSuministro.HasRows)
+                    {
+                        suministro = new List<Suministro>();
+                        int i = 1;
+                        while (drSuministro.Read())
+                        {
+                            suministro.Add(new Suministro()
+                            {
+                                iD_Suministro = drSuministro.GetInt32(0),
+                                suministro_Numero = drSuministro.GetString(1),
+                                suministro_Medidor = drSuministro.GetString(2),
+                                suministro_Cliente = drSuministro.GetString(3),
+                                suministro_Direccion = drSuministro.GetString(4),
+                                suministro_UnidadLectura = drSuministro.GetString(5),
+                                suministro_TipoProceso = drSuministro.GetString(6),
+                                suministro_LecturaMinima = drSuministro.GetString(7),
+                                suministro_LecturaMaxima = drSuministro.GetString(8),
+                                suministro_Fecha_Reg_Movil = drSuministro.GetDateTime(9).ToString("dd/MM/yyyy"),
+                                suministro_UltimoMes = drSuministro.GetString(10),
+                                consumoPromedio = drSuministro.GetDecimal(11),
+                                lecturaAnterior = drSuministro.GetString(12),
+                                suministro_Instalacion = drSuministro.GetString(13),
+                                valida1 = drSuministro.GetInt32(14),
+                                valida2 = drSuministro.GetInt32(15),
+                                valida3 = drSuministro.GetInt32(16),
+                                valida4 = drSuministro.GetInt32(17),
+                                valida5 = drSuministro.GetInt32(18),
+                                valida6 = drSuministro.GetInt32(19),
+                                tipoCliente = drSuministro.GetInt32(20),
+                                estado = drSuministro.GetInt32(21),
+                                suministroOperario_Orden = drSuministro.GetInt32(22),
+                                flagObservada = drSuministro.GetInt32(23),
+                                orden = i++,
+                                activo = 1
+                            });
+                        }
+                    }
+
+                    con.Close();
+                }
+
+                return suministro;
+
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
 
     }
 }
