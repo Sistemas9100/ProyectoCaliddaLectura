@@ -91,11 +91,7 @@ namespace WebApiFenosa.Controllers
         public IHttpActionResult VerificarCorte(string suministro)
         {
             Mensaje mensaje = MigrationDA.verificarCorte(suministro);
-            if (mensaje != null)
-            {
-                return Ok(mensaje);
-            }
-            else return NotFound();
+            return Ok(mensaje);
         }
 
 

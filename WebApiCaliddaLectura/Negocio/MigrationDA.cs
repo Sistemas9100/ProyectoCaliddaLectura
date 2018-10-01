@@ -387,7 +387,7 @@ namespace Negocio
                     {
                         if (r.tipo == 1 || r.tipo == 2)
                         {
-                            using (SqlCommand cmd = new SqlCommand("USP_SAVE_REGISTRO_LECTURA2", con))
+                            using (SqlCommand cmd = new SqlCommand("USP_SAVE_REGISTRO_LECTURA", con))
                             {
                                 cmd.CommandTimeout = 0;
                                 cmd.CommandType = CommandType.StoredProcedure;
@@ -713,7 +713,7 @@ namespace Negocio
                     con.Open();
                     if (r.tipo == 2 || r.tipo == 1)
                     {
-                        using (SqlCommand cmd = new SqlCommand("USP_SAVE_REGISTRO_LECTURA2", con))
+                        using (SqlCommand cmd = new SqlCommand("USP_SAVE_REGISTRO_LECTURA", con))
                         {
                             cmd.CommandTimeout = 0;
                             cmd.CommandType = CommandType.StoredProcedure;
