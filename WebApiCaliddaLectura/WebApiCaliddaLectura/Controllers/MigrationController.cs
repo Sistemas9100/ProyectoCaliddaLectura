@@ -54,12 +54,7 @@ namespace WebApiFenosa.Controllers
         public IHttpActionResult SaveListRegistro(List<Registro> registroList)
         {
             Mensaje mensaje = MigrationDA.saveListRegistro(registroList);
-            if (mensaje != null)
-            {
-                return Ok(mensaje);
-            }
-            else return NotFound();
-
+            return Ok(mensaje);
         }
 
 
@@ -68,11 +63,7 @@ namespace WebApiFenosa.Controllers
         public IHttpActionResult SaveListRegistro(Registro registroList)
         {
             Mensaje mensaje = MigrationDA.saveRegistro(registroList);
-            if (mensaje != null)
-            {
-                return Ok(mensaje);
-            }
-            else return NotFound();
+            return Ok(mensaje);
         }
 
 
