@@ -15,7 +15,7 @@ namespace Negocio
     {
         private static string db = ConfigurationManager.ConnectionStrings["conexionDsige"].ConnectionString;
 
-        public static Login GetOne(string user, string password, string version, string imei,string token)
+        public static Login GetOne(string user, string password, string version, string imei, string token)
         {
             try
             {
@@ -44,6 +44,7 @@ namespace Negocio
                                 item.operario_EnvioEn_Linea = Convert.ToInt32(dr["Operario_EnvioEn_Linea"]);
                                 item.tipoUsuario = dr["TipoUsuario"].ToString();
                                 item.estado = dr["estado"].ToString();
+                                item.lecturaManual = Convert.ToInt32(dr["LecturaManual"]);
                                 item.mensaje = "Go";
                             }
                             else
@@ -51,8 +52,8 @@ namespace Negocio
                                 item.mensaje = "Pass";
                             }
                         }
-                        dr.Close();
                     }
+                    cn.Close();
                 }
                 return item;
 
@@ -170,8 +171,15 @@ namespace Negocio
                     cmd.Parameters.Add("@fecha", SqlDbType.VarChar).Value = e.fecha;
                     cmd.Parameters.Add("@modoAvion", SqlDbType.Int).Value = e.modoAvion;
                     cmd.Parameters.Add("@planDatos", SqlDbType.Bit).Value = e.planDatos;
-                    cmd.ExecuteNonQuery();
-                    m.mensaje = "Enviado";
+
+                    int a = cmd.ExecuteNonQuery();
+                    if (a == 1)
+                    {
+                        m = new Mensaje();
+                        m.codigo = 1;
+                        m.mensaje = "Enviado";
+                    }
+
                     cn.Close();
                 }
                 return m;
@@ -198,8 +206,16 @@ namespace Negocio
                     cmd.Parameters.Add("@longitud", SqlDbType.VarChar).Value = e.longitud;
                     cmd.Parameters.Add("@fechaGPD", SqlDbType.VarChar).Value = e.fechaGPD;
                     cmd.Parameters.Add("@fecha", SqlDbType.VarChar).Value = e.fecha;
-                    cmd.ExecuteNonQuery();
-                    m.mensaje = "Enviado";
+
+                    int a = cmd.ExecuteNonQuery();
+
+                    if (a == 1)
+                    {
+                        m = new Mensaje();
+                        m.codigo = 1;
+                        m.mensaje = "Enviado";
+                    }
+
                     cn.Close();
                 }
                 return m;
@@ -278,7 +294,6 @@ namespace Negocio
             }
 
         }
-
 
         public static Sincronizar sincronizar(int operarioId)
         {
@@ -381,7 +396,7 @@ namespace Negocio
                 throw e;
             }
         }
-
+     
 
         /*
                public static string saveEstadoMovil(List<EstadoMovil> EstadoMovil)

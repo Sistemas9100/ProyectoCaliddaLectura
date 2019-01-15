@@ -107,62 +107,134 @@ namespace WebApiFenosa.Controllers
             else return Ok(sync);
         }
 
-
-        [Route("api/Migration/SavePhoto2")]
-        [AllowAnonymous]
-        public async Task<HttpResponseMessage> PostUserImage()
+        [HttpGet]
+        [Route("api/Migration/GetOperarioById")]
+        public IHttpActionResult GetOperarioById(int operarioId)
         {
-            Dictionary<string, object> dict = new Dictionary<string, object>();
+            Mensaje operarios = MigrationDA.getOperarioById(operarioId);
+            return Ok(operarios);
+        }
+
+        [HttpGet]
+        [Route("api/Migration/GetOperarios")]
+        public IHttpActionResult GetOperarios()
+        {
+            List<Operario> operarios = MigrationDA.getOperarios();
+            return Ok(operarios);
+        }
+
+        [HttpGet]
+        [Route("api/Migration/UpdateOperario")]
+        public IHttpActionResult UpdateOperario(int operarioId, int lecturaManual)
+        {
+            Mensaje mensaje = MigrationDA.updateOperario(operarioId, lecturaManual);
+            return Ok(mensaje);
+        }
+
+
+        [HttpPost]
+        [Route("api/Migration/SaveOperarioGps")]
+        public IHttpActionResult SaveOperarioGps(EstadoOperario estadoOperario)
+        {
+            Mensaje mensaje = ServiciosDA.saveOperarioGps(estadoOperario);
+            return Ok(mensaje);
+        }
+
+        [HttpPost]
+        [Route("api/Migration/SaveEstadoMovil")]
+        public IHttpActionResult SaveEstadoMovil(EstadoMovil estadoMovil)
+        {
+            Mensaje mensaje = ServiciosDA.saveEstadoMovil(estadoMovil);
+            return Ok(mensaje);
+        }
+
+
+        // NUEVOOOOOOOOOOOOOOOOOOOOO
+
+        [HttpPost]
+        [Route("api/Migration/Save")]
+        public IHttpActionResult SaveRegistroMasivo()
+        {
             try
             {
-                var httpRequest = HttpContext.Current.Request;
+                //string path = HttpContext.Current.Server.MapPath("~/Imagen/");
+                string path = "C:/HostingSpaces/admincobraperu/www.cobraperu.com/wwwroot/Calidda/Content/foto/foto/";
+                var fotos = HttpContext.Current.Request.Files;
+                var json = HttpContext.Current.Request.Form["model"];
+                Registro p = JsonConvert.DeserializeObject<Registro>(json);
 
-                foreach (string file in httpRequest.Files)
+                Mensaje mensaje = MigrationDA.saveRegistroRx(p);
+
+                if (mensaje != null)
                 {
-                    HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Created);
-
-                    var postedFile = httpRequest.Files[file];
-                    if (postedFile != null && postedFile.ContentLength > 0)
+                    for (int i = 0; i < fotos.Count; i++)
                     {
-
-                        int MaxContentLength = 1024 * 1024 * 1; //Size = 1 MB  
-
-                        IList<string> AllowedFileExtensions = new List<string> { ".jpg", ".gif", ".png" };
-                        var ext = postedFile.FileName.Substring(postedFile.FileName.LastIndexOf('.'));
-                        var extension = ext.ToLower();
-                        if (!AllowedFileExtensions.Contains(extension))
-                        {
-                            var message = string.Format("Please Upload image of type .jpg,.gif,.png.");
-                            dict.Add("error", message);
-                            return Request.CreateResponse(HttpStatusCode.BadRequest, dict);
-                        }
-                        else if (postedFile.ContentLength > MaxContentLength)
-                        {
-                            var message = string.Format("Please Upload a file upto 1 mb.");
-                            dict.Add("error", message);
-                            return Request.CreateResponse(HttpStatusCode.BadRequest, dict);
-                        }
-                        else
-                        {
-                            var filePath = HttpContext.Current.Server.MapPath("~/Imagen/" + postedFile.FileName + extension);
-                            postedFile.SaveAs(filePath);
-                        }
+                        string fileName = Path.GetFileName(fotos[i].FileName);
+                        fotos[i].SaveAs(path + fileName);
                     }
-
-                    var message1 = string.Format("ok");
-                    return Request.CreateErrorResponse(HttpStatusCode.Created, message1); ;
                 }
-                var res = string.Format("Please Upload a image.");
-                dict.Add("error", res);
-                return Request.CreateResponse(HttpStatusCode.NotFound, dict);
+                else
+                {
+                    mensaje = new Mensaje();
+                    mensaje.mensaje = "Registro repetido";
+                }
+
+                return Ok(mensaje);
             }
             catch (Exception ex)
             {
-                var res = string.Format("some Message");
-                dict.Add("error", res);
-                return Request.CreateResponse(HttpStatusCode.NotFound, dict);
+                return BadRequest(ex.Message);
             }
         }
+
+
+        [HttpPost]
+        [Route("api/Migration/SaveRegistroCorte")]
+        public IHttpActionResult SaveRegistroCorte()
+        {
+            try
+            {
+                //string path = HttpContext.Current.Server.MapPath("~/Imagen/");
+                string path = "C:/HostingSpaces/admincobraperu/www.cobraperu.com/wwwroot/Calidda/Content/foto/foto/";
+                var fotos = HttpContext.Current.Request.Files;
+                var json = HttpContext.Current.Request.Form["model"];
+                var suministro = HttpContext.Current.Request.Form["suministro"];
+
+                Mensaje verificar = MigrationDA.verificarCorte(suministro);
+
+                if (verificar.codigo == 0)
+                {
+                    Registro p = JsonConvert.DeserializeObject<Registro>(json);
+
+                    Mensaje mensaje = MigrationDA.saveRegistroRx(p);
+
+                    if (mensaje != null)
+                    {
+                        for (int i = 0; i < fotos.Count; i++)
+                        {
+                            string fileName = Path.GetFileName(fotos[i].FileName);
+                            fotos[i].SaveAs(path + fileName);
+                        }
+                    }
+                    else
+                    {
+                        mensaje = new Mensaje();
+                        mensaje.mensaje = "Registro repetido";
+                    }
+
+                    return Ok(mensaje);
+                }
+                else
+                {
+                    return Ok(verificar);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
     }
 }

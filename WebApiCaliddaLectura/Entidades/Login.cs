@@ -15,6 +15,7 @@ namespace Entidades
         public int operario_EnvioEn_Linea { get; set; }
         public string tipoUsuario { get; set; }
         public string estado { get; set; }
+        public int lecturaManual { get; set; }
         public string mensaje { get; set; }
     }
 }

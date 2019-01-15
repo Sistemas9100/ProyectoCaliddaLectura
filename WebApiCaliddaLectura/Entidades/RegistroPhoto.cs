@@ -13,5 +13,6 @@ namespace Entidades
         public string fecha_Sincronizacion_Android { get; set; }
         public string latitud { get; set; }
         public string longitud { get; set; }
+        public int estado { get; set; }
     }
 }
